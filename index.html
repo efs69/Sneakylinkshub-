@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Sneakylinks — Devices & Hostels</title>
+  <meta name="description" content="Sneakylinks — laptops, phones, gadgets and hostel bookings with WhatsApp orders." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0b0c10;
+      --card: #111218;
+      --text: #e6e6e6;
+      --muted: #9aa0a6;
+      --brand: #4f46e5;
+      --brand-2: #06b6d4;
+      --border: #22242e;
+      --shadow: 0 10px 25px rgba(0,0,0,.25);
+      --ok: #16a34a;
+      --warn: #f59e0b;
+      --danger:#ef4444;
+    }
+    .light{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #0b0c10;
+      --muted: #5f6368;
+      --brand: #4f46e5;
+      --brand-2: #06b6d4;
+      --border: #e8eaf0;
+      --shadow: 0 10px 25px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      overflow-x:hidden;
+    }
+    img{max-width:100%;display:block}
+    .no-select{-webkit-user-select:none;user-select:none}
+    .app{min-height:100%;display:flex;flex-direction:column}
+
+    /* NAV */
+    .topbar{
+      position:sticky;top:0;z-index:30;
+      display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;
+      padding:12px 16px;border-bottom:1px solid var(--border);
+      backdrop-filter:saturate(180%) blur(8px);background:color-mix(in oklab, var(--bg) 85%, transparent);
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer;white-space:nowrap}
+    .logo-dot{width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:0 0 0 3px color-mix(in oklab, var(--brand) 15%, transparent)}
+    .brand-text{font-size:1.05rem;letter-spacing:.3px}
+    .search-wrap{display:flex;align-items:center;gap:8px}
+    .search{display:flex;align-items:center;gap:8px;flex:1}
+    .search input,.search select{
+      width:100%;
+      padding:10px 12px;border:1px solid var(--border);background:var(--card);border-radius:12px;color:var(--text);
+    }
+    .btn{
+      border:1px solid var(--border);background:var(--card);color:var(--text);
+      padding:10px 14px;border-radius:14px;font-weight:600;cursor:pointer;
+      box-shadow:var(--shadow);text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+    }
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));border:none;color:#fff}
+    .btn.ghost{background:transparent}
+    .btn.small{padding:8px 10px;border-radius:10px;font-size:.9rem}
+
+    /* PRICE RANGE (Dual Slider) */
+    .price-filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .range{
+      display:grid;gap:6px;min-width:220px
+    }
+    .range .labels{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+    .range input[type="range"]{width:100%}
+    .range .values{display:flex;gap:6px}
+    .range .values input{
+      width:100px;padding:8px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);
+    }
+
+    /* HERO */
+    .hero{
+      padding:40px 16px 22px;border-bottom:1px solid var(--border);
+      background:
+        radial-gradient(800px 300px at 20% -10%, color-mix(in oklab, var(--brand) 20%, transparent), transparent),
+        radial-gradient(800px 300px at 80% -10%, color-mix(in oklab, var(--brand-2) 18%, transparent), transparent);
+    }
+    .hero-inner{max-width:1100px;margin:0 auto;text-align:center}
+    .hero h1{font-size:clamp(26px,4.5vw,40px);margin:0 0 8px;font-weight:800}
+    .muted{Color:var(--muted)}
+    .hero-actions{margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+    .container{max-width:1200px;margin:0 auto;padding:22px 16px}
+    .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .section-head h2{margin:0;font-size:clamp(20px,4vw,28px)}
+
+    /* GRID */
+    .grid{display:grid;gap:14px}
+    @media (max-width: 639px){ .grid{grid-template-columns: repeat(2, minmax(0,1fr));} }
+    @media (min-width: 640px) and (max-width: 959px){ .grid{grid-template-columns: repeat(3, minmax(0,1fr));} }
+    @media (min-width: 960px){ .grid{grid-template-columns: repeat(4, minmax(0,1fr));} }
+    .card{
+      background:var(--card);border:1px solid var(--border);border-radius:18px;padding:12px;
+      box-shadow:var(--shadow);
+    }
+    .badge{font-size:.7rem;padding:3px 8px;border-radius:20px;border:1px solid var(--border);color:var(--muted)}
+    .product{ display:flex;flex-direction:column;gap:8px;cursor:pointer; }
+    .product .thumb{ aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:#0f1014;display:flex;align-items:center;justify-content:center; }
+    .product .thumb img{width:100%;height:100%;object-fit:cover}
+    .product .title{font-weight:700;font-size:.95rem;display:flex;align-items:center;justify-content:space-between;gap:6px}
+    .product .specs{font-size:.85rem;color:var(--muted);min-height:40px}
+    .price{font-weight:800}
+    .product .row{display:flex;align-items:center;justify-content:space-between}
+
+    .footer{padding:28px 16px;border-top:1px solid var(--border);text-align:center;margin-top:auto}
+    .tiny{font-size:.8rem}
+
+    /* FORMS */
+    .form{display:grid;gap:12px}
+    .form-row{display:grid;gap:6px}
+    .form-row input, .form-row textarea, .form-row select{
+      padding:10px 12px;border:1px solid var(--border);background:var(--card);border-radius:12px;color:var(--text);
+    }
+    .form-actions{display:flex;gap:10px;justify-content:flex-end}
+    .form-actions.center{justify-content:center}
+
+    /* MODALS */
+    .modal{
+      position:fixed;inset:0;background:rgba(0,0,0,.6);
+      display:flex;align-items:center;justify-content:center;padding:16px;z-index:50;
+    }
+    .modal.hidden{display:none}
+    .modal-card{
+      background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);
+      width:min(950px,100%);padding:14px;position:relative;
+    }
+    .modal-card.narrow{width:min(460px,100%)}
+    .modal-body{display:grid;gap:14px}
+    .modal-close{
+      position:absolute;margin:-8px -8px 0 0;right:20px;top:20px;border:none;background:transparent;color:var(--text);font-size:20px;cursor:pointer;
+    }
+    .viewer{position:relative;border-radius:14px;overflow:hidden}
+    .viewer img{width:100%;height:360px;object-fit:cover;background:#0f1014}
+    .carousel-btn{
+      position:absolute;top:50%;transform:translateY(-50%);border:none;background:rgba(0,0,0,.4);
+      padding:6px 10px;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;
+    }
+    #prevImg{left:8px} #nextImg{right:8px}
+    .view-info{display:grid;gap:8px}
+    .price-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+    /* ADMIN */
+    .admin{
+      position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:60;display:grid;
+      grid-template-rows:auto 1fr auto;padding:16px;
+    }
+    .admin.hidden{display:none}
+    .admin-header,.admin-footer{
+      background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px;box-shadow:var(--shadow);
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    }
+    .admin-body{ display:grid;grid-template-columns:280px 1fr;gap:12px;padding:12px 0; }
+    .admin-list{
+      background:var(--card);border:1px solid var(--border);border-radius:16px;padding:10px;max-height:60vh;overflow:auto;
+    }
+    .admin-list .item{
+      display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;
+    }
+    .admin-list .item.active{outline:2px solid var(--brand)}
+    .admin-editor{
+      background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px;max-height:60vh;overflow:auto;
+    }
+    .empty-state{color:var(--muted);text-align:center;margin-top:40px}
+    .image-row{display:flex;flex-wrap:wrap;gap:10px}
+    .image-cell{width:96px;height:96px;border:1px dashed var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;background:#0f1014}
+    .image-cell img{width:100%;height:100%;object-fit:cover}
+    .handle{position:absolute;bottom:6px;right:6px;font-size:11px;background:rgba(0,0,0,.4);padding:2px 6px;border-radius:8px;color:#fff}
+    .delete{position:absolute;top:6px;right:6px;font-size:12px;background:rgba(0,0,0,.6);padding:2px 6px;border-radius:8px;color:#fff;cursor:pointer}
+    .dragging{opacity:.6}
+
+    /* STICKY FILTER BAR ON SMALL SCREENS */
+    @media (max-width: 720px){
+      .topbar{grid-template-columns:auto 1fr auto; grid-auto-rows:auto}
+      .search-wrap{grid-column:1 / -1}
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="topbar no-select">
+      <div class="brand" id="brandLogo" title="Sneakylinks">
+        <span class="logo-dot"></span>
+        <span class="brand-text">Sneakylinks</span>
+      </div>
+
+      <div class="search-wrap">
+        <div class="search" style="flex:1">
+          <input id="searchInput" type="search" placeholder="Search products & hostels…" />
+        </div>
+        <div class="search">
+          <select id="categoryFilter" title="Filter by category">
+            <option value="all">All categories</option>
+            <option value="phones">Phones</option>
+            <option value="laptops">Laptops</option>
+            <option value="hostels">Hostels</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="price-filter">
+        <div class="range">
+          <div class="labels"><span>Min</span><span>Max</span></div>
+          <input id="minRange" type="range" min="0" max="50000" step="10" value="0">
+          <input id="maxRange" type="range" min="0" max="50000" step="10" value="50000">
+          <div class="values">
+            <input id="minPrice" type="number" min="0" step="10" value="0">
+            <input id="maxPrice" type="number" min="0" step="10" value="50000">
+          </div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button id="darkToggle" class="btn small" aria-label="Toggle color mode" title="Toggle color mode">🌓</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <h1>Everything tech. One link.</h1>
+        <p class="muted">
+          Laptops, phones, gadgets — and hostels too. Browse, view details, and book via WhatsApp in seconds.
+        </p>
+        <div class="hero-actions">
+          <a href="#request-area" class="btn">Request a Product</a>
+        </div>
+      </div>
+    </section>
+
+    <main class="container">
+      <div class="section-head">
+        <h2>All Items</h2>
+        <p class="muted">Products & hostels in one place. Tap a card to view or book.</p>
+      </div>
+      <div id="grid" class="grid"></div>
+    </main>
+
+    <section id="request-area" class="container">
+      <div class="section-head">
+        <h2>Request a Product</h2>
+        <p class="muted">Can’t find what you want? Tell us and we’ll source it for you.</p>
+      </div>
+      <form id="requestForm" class="card form">
+        <div class="form-row">
+          <label>Full Name</label>
+          <input type="text" id="reqName" required placeholder="Your name" />
+        </div>
+        <div class="form-row">
+          <label>Contact</label>
+          <input type="tel" id="reqContact" required placeholder="Phone or WhatsApp" />
+        </div>
+        <div class="form-row">
+          <label>Desired Product</label>
+          <input type="text" id="reqProduct" required placeholder="e.g., iPhone 14 Pro 256GB" />
+        </div>
+        <div class="form-row">
+          <label>Notes (optional)</label>
+          <textarea id="reqNotes" rows="3" placeholder="Color, condition, price range…"></textarea>
+        </div>
+        <div class="form-row">
+          <label>Send To</label>
+          <select id="waNumberRequest"></select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Send Request via WhatsApp</button>
+        </div>
+      </form>
+    </section>
+
+    <footer class="footer no-select">
+      <p>&copy; <span id="year"></span> Sneakylinks. All rights reserved.</p>
+      <p class="tiny muted">Tap the logo 5× for admin login.</p>
+    </footer>
+  </div>
+
+  <!-- View Modal -->
+  <div id="viewModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="viewTitle">
+    <div class="modal-card">
+      <button class="modal-close" data-close="viewModal" aria-label="Close">✕</button>
+      <div class="modal-body">
+        <div class="viewer">
+          <button class="carousel-btn" id="prevImg" aria-label="Previous image">‹</button>
+          <img id="viewImg" alt="Item image" />
+          <button class="carousel-btn" id="nextImg" aria-label="Next image">›</button>
+        </div>
+        <div class="view-info">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <h3 id="viewTitle"></h3>
+            <span id="viewBadge" class="badge"></span>
+          </div>
+          <p id="viewSpecs" class="muted"></p>
+          <div class="price-row">
+            <span id="viewPrice" class="price"></span>
+            <button id="bookBtn" class="btn primary">Book this item</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Modal -->
+  <div id="bookModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="bookTitle">
+    <div class="modal-card narrow">
+      <button class="modal-close" data-close="bookModal" aria-label="Close">✕</button>
+      <div class="modal-body">
+        <h3 id="bookTitle">Book Item</h3>
+        <form id="bookForm" class="form">
+          <div class="form-row">
+            <label>Full Name</label>
+            <input type="text" id="custName" required placeholder="Your name" />
+          </div>
+          <div class="form-row">
+            <label>Location</label>
+            <input type="text" id="custLocation" required placeholder="City/Area" />
+          </div>
+          <div class="form-row">
+            <label>Contact</label>
+            <input type="tel" id="custContact" required placeholder="Phone or WhatsApp" />
+          </div>
+          <div class="form-row">
+            <label>Selected Item</label>
+            <input type="text" id="custProduct" required readonly />
+          </div>
+          <div class="form-row">
+            <label>Notes (optional)</label>
+            <textarea id="custNotes" rows="2" placeholder="Any extra info"></textarea>
+          </div>
+          <div class="form-row">
+            <label>Send To</label>
+            <select id="waNumberBooking"></select>
+          </div>
+          <div class="form-actions center">
+            <button type="submit" class="btn primary">Send Booking via WhatsApp</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Login Modal -->
+  <div id="adminLoginModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle">
+    <div class="modal-card narrow">
+      <button class="modal-close" data-close="adminLoginModal" aria-label="Close">✕</button>
+      <div class="modal-body">
+        <h3 id="adminLoginTitle">Admin Login</h3>
+        <form id="adminLoginForm" class="form">
+          <div class="form-row">
+            <label>Password</label>
+            <input type="password" id="adminPasswordInput" required placeholder="Enter admin password" />
+          </div>
+          <div class="form-actions">
+            <button class="btn primary" type="submit">Enter Admin</button>
+          </div>
+          <p class="tiny muted">Default password: <b>admin</b> (change it inside Admin → Settings).</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="adminPanel" class="admin hidden">
+    <div class="admin-header">
+      <h3>Admin — Sneakylinks</h3>
+      <div class="admin-actions" style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="addProduct" class="btn">+ Add Product</button>
+        <button id="addHostel" class="btn">+ Add Hostel</button>
+        <button id="saveAll" class="btn primary">Save All</button>
+        <button id="exportData" class="btn ghost">Export JSON</button>
+        <button id="resetData" class="btn ghost" style="color:var(--danger);border-color:var(--danger)">Reset Data</button>
+        <button id="closeAdmin" class="btn ghost">Close</button>
+      </div>
+    </div>
+    <div class="admin-body">
+      <aside class="admin-list" id="adminList"></aside>
+      <section class="admin-editor" id="adminEditor">
+        <div class="empty-state">
+          <p>Select an item to edit its images (2–5), title, price, specs, and category.</p>
+          <p class="tiny muted">Tip: Use the buttons above to add **Products** or **Hostels**. Drag to reorder images. PNG/JPG only.</p>
+        </div>
+      </section>
+    </div>
+    <div class="admin-footer" style="gap:12px;flex-wrap:wrap">
+      <div class="settings" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label>Admin Password:</label>
+        <input type="password" id="adminPasswordSetting" placeholder="Set new password" />
+        <button id="savePassword" class="btn">Update Password</button>
+      </div>
+      <div class="numbers" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label>WhatsApp Numbers (comma-separated):</label>
+        <input type="text" id="waNumbersSetting" placeholder="e.g., 0597053192,0596012229,0594438054" />
+        <button id="saveNumbers" class="btn">Update Numbers</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+    import { getFirestore, collection, getDocs, addDoc, updateDoc, setDoc, doc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // Your Firebase config (provided by you)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDLXnSua0G2ZPGZ-bj5Q44H3TMJMGWd3E0",
+      authDomain: "sneakylinks-efs69.firebaseapp.com",
+      projectId: "sneakylinks-efs69",
+      storageBucket: "sneakylinks-efs69.firebasestorage.app",
+      messagingSenderId: "590925889600",
+      appId: "1:590925889600:web:ba68ee40b095b0f3d99fa5",
+      measurementId: "G-E7GYYQRR1Q"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    try{ getAnalytics(app); }catch(e){ /* analytics may fail in some environments */ }
+    const db = getFirestore(app);
+
+    // Keys & defaults
+    const DEFAULT_PASSWORD = "admin";
+    const WA_DEFAULT_NUMBERS = ["0597053192","0596012229","0594438054"];
+    const PRODUCT_PLACEHOLDERS = 20;
+    const HOSTEL_PLACEHOLDERS = 10;
+    const MIN_PRICE = 0, MAX_PRICE = 50000;
+
+    // DOM refs
+    const els = {
+      grid: document.getElementById("grid"),
+      year: document.getElementById("year"),
+      darkToggle: document.getElementById("darkToggle"),
+      brand: document.getElementById("brandLogo"),
+      viewModal: document.getElementById("viewModal"),
+      viewImg: document.getElementById("viewImg"),
+      viewTitle: document.getElementById("viewTitle"),
+      viewSpecs: document.getElementById("viewSpecs"),
+      viewPrice: document.getElementById("viewPrice"),
+      viewBadge: document.getElementById("viewBadge"),
+      prevImg: document.getElementById("prevImg"),
+      nextImg: document.getElementById("nextImg"),
+      bookBtn: document.getElementById("bookBtn"),
+      bookModal: document.getElementById("bookModal"),
+      bookForm: document.getElementById("bookForm"),
+      custName: document.getElementById("custName"),
+      custLocation: document.getElementById("custLocation"),
+      custContact: document.getElementById("custContact"),
+      custProduct: document.getElementById("custProduct"),
+      custNotes: document.getElementById("custNotes"),
+      waNumberBooking: document.getElementById("waNumberBooking"),
+      waNumberRequest: document.getElementById("waNumberRequest"),
+      closeButtons: document.querySelectorAll(".modal-close"),
+      requestForm: document.getElementById("requestForm"),
+      adminLoginModal: document.getElementById("adminLoginModal"),
+      adminLoginForm: document.getElementById("adminLoginForm"),
+      adminPasswordInput: document.getElementById("adminPasswordInput"),
+      adminPanel: document.getElementById("adminPanel"),
+      adminList: document.getElementById("adminList"),
+      adminEditor: document.getElementById("adminEditor"),
+      addProduct: document.getElementById("addProduct"),
+      addHostel: document.getElementById("addHostel"),
+      saveAll: document.getElementById("saveAll"),
+      exportData: document.getElementById("exportData"),
+      resetData: document.getElementById("resetData"),
+      closeAdmin: document.getElementById("closeAdmin"),
+      adminPasswordSetting: document.getElementById("adminPasswordSetting"),
+      savePassword: document.getElementById("savePassword"),
+      waNumbersSetting: document.getElementById("waNumbersSetting"),
+      saveNumbers: document.getElementById("saveNumbers"),
+      // filters
+      searchInput: document.getElementById("searchInput"),
+      categoryFilter: document.getElementById("categoryFilter"),
+      minRange: document.getElementById("minRange"),
+      maxRange: document.getElementById("maxRange"),
+      minPrice: document.getElementById("minPrice"),
+      maxPrice: document.getElementById("maxPrice"),
+    };
+
+    const $ = (sel, root=document)=>root.querySelector(sel);
+    const $$ = (sel, root=document)=>Array.from(root.querySelectorAll(sel));
+
+    // Application state (keeps minimal local state, most comes from Firestore)
+    const state = {
+      items: [], // loaded from Firestore
+      view: { product:null, idx:0 },
+      pw: DEFAULT_PASSWORD,
+      numbers: WA_DEFAULT_NUMBERS,
+      filters: { q:"", cat:"all", min:MIN_PRICE, max:MAX_PRICE },
+      theme: localStorage.getItem("sneakylinksTheme") ? JSON.parse(localStorage.getItem("sneakylinksTheme")) : "dark"
+    };
+
+    // Firestore structure:
+    // collection: "items" -> documents for each product/hostel
+    // collection: "meta" -> doc "app" -> { adminPassword, numbers }
+    const ITEMS_COLL = "items";
+    const META_COLL = "meta";
+    const META_DOC_ID = "app";
+
+    // Utilities
+    function formatCurrency(v){
+      if(!v && v!==0) return "";
+      const num = Number(String(v).replace(/[^\\d.]/g,''));
+      if (isNaN(num)) return String(v);
+      try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:'GHS',maximumFractionDigits:0}).format(num); }
+      catch{ return `${v} GHS`; }
+    }
+
+    function normalizeNumber(n){
+      let d = String(n||"").replace(/\\D/g,'');
+      if (d.startsWith("0") && d.length === 10) return "233" + d.slice(1);
+      if (d.startsWith("233") && d.length === 12) return d;
+      return d;
+    }
+    function waHref(number, message){
+      const encoded = encodeURIComponent(message);
+      const to = normalizeNumber(number);
+      return `https://wa.me/${to}?text=${encoded}`;
+    }
+    function openWhatsApp(number, message){
+      const href = waHref(number, message);
+      window.open(href, "_blank");
+    }
+
+    // --- Firestore helpers ---
+
+    async function ensureMetaDoc(){
+      const ref = doc(db, META_COLL, META_DOC_ID);
+      const snap = await getDoc(ref);
+      if (!snap.exists()){
+        await setDoc(ref, { adminPassword: DEFAULT_PASSWORD, numbers: WA_DEFAULT_NUMBERS });
+        state.pw = DEFAULT_PASSWORD;
+        state.numbers = WA_DEFAULT_NUMBERS.slice();
+      } else {
+        const data = snap.data();
+        state.pw = data.adminPassword || DEFAULT_PASSWORD;
+        state.numbers = Array.isArray(data.numbers) && data.numbers.length ? data.numbers : WA_DEFAULT_NUMBERS.slice();
+      }
+      populateNumbers();
+    }
+
+    // Real-time sync: listen to items and meta doc so all users see changes immediately
+    function startRealtimeListeners(){
+      const itemsRef = collection(db, ITEMS_COLL);
+      onSnapshot(itemsRef, snapshot => {
+        const items = [];
+        snapshot.forEach(d => {
+          items.push({ id: d.id, ...d.data() });
+        });
+        // sort by title for stable ordering (or you could add an 'order' field)
+        items.sort((a,b)=> (a.title||'').localeCompare(b.title||''));
+        state.items = items;
+        renderGrid();
+        renderAdminList();
+      });
+
+      const metaRef = doc(db, META_COLL, META_DOC_ID);
+      onSnapshot(metaRef, snap => {
+        if (!snap.exists()) return;
+        const data = snap.data();
+        state.pw = data.adminPassword || DEFAULT_PASSWORD;
+        state.numbers = Array.isArray(data.numbers) && data.numbers.length ? data.numbers : WA_DEFAULT_NUMBERS.slice();
+        populateNumbers();
+      });
+    }
+
+    async function addItemToFirestore(item){
+      // item should be an object without id
+      await addDoc(collection(db, ITEMS_COLL), item);
+    }
+    async function updateItemInFirestore(id, item){
+      await updateDoc(doc(db, ITEMS_COLL, id), item);
+    }
+    async function deleteItemFromFirestore(id){
+      await deleteDoc(doc(db, ITEMS_COLL, id));
+    }
+
+    // Export JSON of current items
+    function exportJSON(){
+      const blob = new Blob([JSON.stringify({ items: state.items }, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "sneakylinks-data.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Reset: deletes all item docs and re-creates placeholders
+    async function resetDataFirestore(){
+      if (!confirm("This will remove all saved items and settings in Firestore and restore placeholders. Continue?")) return;
+      // delete all items
+      const snapshot = await getDocs(collection(db, ITEMS_COLL));
+      const deletes = [];
+      snapshot.forEach(d => deletes.push(deleteDoc(doc(db, ITEMS_COLL, d.id))));
+      await Promise.all(deletes);
+      // recreate placeholders
+      const placeholders = [];
+      for (let i=0;i<PRODUCT_PLACEHOLDERS;i++){
+        placeholders.push({
+          title: `Product ${i+1}`,
+          price: "",
+          specs: "Add specs in admin",
+          images: [],
+          category: ["phones","laptops","others"][i%3]
+        });
+      }
+      for (let i=0;i<HOSTEL_PLACEHOLDERS;i++){
+        placeholders.push({
+          title: `Hostel ${i+1}`,
+          price: "",
+          specs: "Add hostel details in admin",
+          images: [],
+          category: "hostels"
+        });
+      }
+      const adds = placeholders.map(p => addDoc(collection(db, ITEMS_COLL), p));
+      await Promise.all(adds);
+      // reset meta doc
+      await setDoc(doc(db, META_COLL, META_DOC_ID), { adminPassword: DEFAULT_PASSWORD, numbers: WA_DEFAULT_NUMBERS });
+      alert("Data reset. Placeholders restored.");
+    }
+
+    // UI rendering (uses state.items)
+    function productCard(p){
+      const thumb = p.images?.[0] ? `<img src="${p.images[0]}" alt="${p.title}">` :
+        `<svg width="64" height="64" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m0 2v12h10V6zm2 3h6v2H9zm0 4h6v2H9z"/></svg>`;
+      const badge = p.category;
+      const price = p.price ? formatCurrency(p.price) : "";
+      return `<article class="card product" data-id="${p.id}" tabindex="0" role="button" aria-label="${p.title}">
+        <div class="thumb">${thumb}</div>
+        <div class="title">${p.title || "Untitled"} <span class="badge">${badge}</span></div>
+        <div class="specs">${p.specs || ""}</div>
+        <div class="row">
+          <span class="price">${price}</span>
+          <button class="btn" data-action="view" data-id="${p.id}">View</button>
+        </div>
+      </article>`;
+    }
+
+    function renderGrid(){
+      const { q, cat, min, max } = state.filters;
+      const qLower = (q||"").toLowerCase();
+      const items = state.items.filter(it=>{
+        const matchesCat = cat === "all" || it.category === cat;
+        const matchesQ = (it.title||"").toLowerCase().includes(qLower) || (it.specs||"").toLowerCase().includes(qLower);
+        const priceNum = Number(String(it.price||"").replace(/[^\\d.]/g,'')) || 0;
+        const matchesPrice = priceNum >= min && priceNum <= max;
+        return matchesCat && matchesQ && matchesPrice;
+      });
+      els.grid.innerHTML = items.map(productCard).join("");
+    }
+
+    // Modal helpers
+    function openModal(id){ document.getElementById(id).classList.remove("hidden"); }
+    function closeModal(id){ document.getElementById(id).classList.add("hidden"); }
+    els.closeButtons.forEach(btn=>btn.addEventListener("click", e=>{ closeModal(e.currentTarget.getAttribute("data-close")); }));
+    window.addEventListener("keydown", e=>{ if (e.key === "Escape"){ ["viewModal","bookModal","adminLoginModal"].forEach(closeModal); }});
+    document.querySelectorAll("[id$='Modal']").forEach(m => {
+      m.addEventListener("click", (e)=>{ if (e.target === m) m.classList.add("hidden"); });
+    });
+
+    function openView(id){
+      const p = state.items.find(x=>x.id===id);
+      if (!p) return;
+      state.view.product = p; state.view.idx = 0;
+      els.viewTitle.textContent = p.title || "Item";
+      els.viewSpecs.textContent = p.specs || "";
+      els.viewPrice.textContent = p.price ? formatCurrency(p.price) : "";
+      els.viewBadge.textContent = p.category;
+      els.viewImg.src = (p.images && p.images[0]) || "";
+      openModal("viewModal");
+    }
+    function shiftImg(delta){
+      const imgs = state.view.product?.images || [];
+      if (!imgs.length) return;
+      state.view.idx = (state.view.idx + delta + imgs.length) % imgs.length;
+      els.viewImg.src = imgs[state.view.idx];
+    }
+    els.prevImg.addEventListener("click", ()=>shiftImg(-1));
+    els.nextImg.addEventListener("click", ()=>shiftImg(1));
+
+    els.grid.addEventListener("click", e=>{
+      const btn = e.target.closest("[data-action='view']");
+      const card = e.target.closest(".product");
+      if (btn){ openView(btn.dataset.id); }
+      else if (card){ openView(card.dataset.id); }
+    });
+    els.grid.addEventListener("keydown", e=>{
+      if (e.key === "Enter" || e.key === " "){
+        const card = e.target.closest(".product"); if (card){ openView(card.dataset.id); }
+      }
+    });
+
+    document.getElementById("bookBtn").addEventListener("click", ()=>{
+      if (!state.view.product) return;
+      els.custProduct.value = state.view.product.title;
+      openModal("bookModal");
+    });
+
+    // WhatsApp helpers & populate numbers
+    function populateNumbers(){
+      const options = ['<option value="__ALL__">All numbers</option>']
+        .concat(state.numbers.map(n => `<option value="${n}">${n}</option>`))
+        .join("");
+      els.waNumberBooking.innerHTML = options;
+      els.waNumberRequest.innerHTML = options;
+    }
+    function sendToSelection(selectEl, message){
+      const val = selectEl.value;
+      if (val === "__ALL__"){
+        state.numbers.forEach((n, i)=> setTimeout(()=>openWhatsApp(n, message), i*150));
+      } else {
+        openWhatsApp(val, message);
+      }
+    }
+
+    // Booking + Request forms
+    els.bookForm.addEventListener("submit", e=>{
+      e.preventDefault();
+      const name = els.custName.value.trim();
+      const loc = els.custLocation.value.trim();
+      const contact = els.custContact.value.trim();
+      const product = els.custProduct.value.trim();
+      const notes = els.custNotes.value.trim();
+      if(!name || !loc || !contact || !product){ return; }
+      const msg = `SNEAKYLINKS BOOKING
+Name: ${name}
+Location: ${loc}
+Contact: ${contact}
+Item: ${product}
+Notes: ${notes || "-"}`;
+      sendToSelection(els.waNumberBooking, msg);
+    });
+
+    els.requestForm.addEventListener("submit", e=>{
+      e.preventDefault();
+      const name = $("#reqName").value.trim();
+      const contact = $("#reqContact").value.trim();
+      const prod = $("#reqProduct").value.trim();
+      const notes = $("#reqNotes").value.trim();
+      if(!name || !contact || !prod){ return; }
+      const msg = `SNEAKYLINKS PRODUCT REQUEST
+Name: ${name}
+Contact: ${contact}
+Requested: ${prod}
+Notes: ${notes || "-"}`;
+      sendToSelection(els.waNumberRequest, msg);
+    });
+
+    // 5x logo click -> admin login
+    let clickCount = 0, clickTimer = null;
+    els.brand.addEventListener("click", ()=>{
+      clickCount++; clearTimeout(clickTimer); clickTimer = setTimeout(()=>{ clickCount = 0; }, 900);
+      if (clickCount >= 5){ clickCount = 0; openModal("adminLoginModal"); els.adminPasswordInput.focus(); }
+    });
+
+    els.adminLoginForm.addEventListener("submit", e=>{
+      e.preventDefault();
+      const pw = els.adminPasswordInput.value;
+      if (pw === state.pw){ closeModal("adminLoginModal"); openAdmin(); els.adminPasswordInput.value = ""; }
+      else { alert("Incorrect password."); }
+    });
+
+    // ADMIN
+    function openAdmin(){ els.adminPanel.classList.remove("hidden"); renderAdminList(); els.adminEditor.innerHTML = `<div class="empty-state"><p>Select an item to edit its images (2–5), title, price, specs, and category.</p><p class="tiny muted">Tip: Drag to reorder images. PNG/JPG only.</p></div>`; els.adminPasswordSetting.value = ""; els.waNumbersSetting.value = state.numbers.join(","); }
+    function closeAdmin(){ els.adminPanel.classList.add("hidden"); }
+    els.closeAdmin.addEventListener("click", closeAdmin);
+
+    function renderAdminList(){
+      els.adminList.innerHTML = state.items.map((p,i)=>{
+        const thumb = p.images?.[0] ? `<img src="${p.images[0]}" style="width:36px;height:36px;object-fit:cover;border-radius:8px" alt="">` : `<div style="width:36px;height:36px;border-radius:8px;background:#14161c"></div>`;
+        return `<div class="item" data-id="${p.id}">${thumb}<div><div style="font-weight:700">${p.title || "Untitled"}</div><div class="tiny muted">${p.category} • #${i+1}</div></div></div>`;
+      }).join("");
+      $$(".admin-list .item", els.adminList).forEach(item=>{
+        item.addEventListener("click", ()=>{
+          $$(".admin-list .item", els.adminList).forEach(i=>i.classList.remove("active"));
+          item.classList.add("active");
+          const id = item.getAttribute("data-id");
+          editItem(id);
+        });
+      });
+    }
+
+    function editItem(id){
+      const p = state.items.find(x=>x.id===id);
+      if (!p) return;
+      els.adminEditor.innerHTML = `
+        <div class="form">
+          <div class="form-row">
+            <label>Title</label>
+            <input type="text" id="eTitle" value="${(p.title||"").replace(/"/g,'&quot;')}" />
+          </div>
+          <div class="form-row">
+            <label>Price (GHS)</label>
+            <input type="text" id="ePrice" value="${p.price||""}" />
+          </div>
+          <div class="form-row">
+            <label>Specs / Description</label>
+            <textarea id="eSpecs" rows="4">${(p.specs||"").replace(/</g,'&lt;')}</textarea>
+          </div>
+          <div class="form-row">
+            <label>Category</label>
+            <select id="eCategory">
+              ${["phones","laptops","hostels","others"].map(c=>`<option value="${c}" ${p.category===c?"selected":""}>${c}</option>`).join("")}
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Images (2–5)</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <button class="btn small" id="addImagesBtn" type="button">Add Images</button>
+              <input type="file" id="imagesInput" accept="image/*" multiple style="display:none">
+              <span class="tiny muted">Choose 2–5 images from your phone or computer.</span>
+            </div>
+            <div class="image-row" id="imgRow">
+              ${(p.images||[]).map((src,idx)=>`
+                <div class="image-cell" draggable="true" data-idx="${idx}">
+                  <span class="delete" data-del="${idx}">✕</span>
+                  <img src="${src}" alt="">
+                  <span class="handle">drag</span>
+                </div>`).join("")}
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn primary" id="saveItem">Save Item</button>
+            <button class="btn" id="deleteItem" type="button" style="background:transparent">Delete Item</button>
+          </div>
+        </div>
+      `;
+
+      const eTitle = $("#eTitle", els.adminEditor);
+      const ePrice = $("#ePrice", els.adminEditor);
+      const eSpecs = $("#eSpecs", els.adminEditor);
+      const eCategory = $("#eCategory", els.adminEditor);
+      const imagesInput = $("#imagesInput", els.adminEditor);
+      const addImagesBtn = $("#addImagesBtn", els.adminEditor);
+
+      addImagesBtn.addEventListener("click", ()=> imagesInput.click());
+      imagesInput.addEventListener("change", async (e)=>{
+        const files = Array.from(e.target.files || []);
+        if (!files.length) return;
+        for (const file of files){
+          if (!file.type.startsWith("image/")) continue;
+          const dataUrl = await toDataURL(file);
+          p.images = p.images || [];
+          p.images.push(dataUrl);
+        }
+        if (p.images.length > 5) p.images = p.images.slice(0,5);
+        // update Firestore
+        await updateItemInFirestore(p.id, { ...p });
+        editItem(id);
+      });
+
+      $$(".delete", els.adminEditor).forEach(btn=>btn.addEventListener("click", async ()=>{
+        const idx = Number(btn.getAttribute("data-del"));
+        p.images.splice(idx,1);
+        await updateItemInFirestore(p.id, { ...p });
+        editItem(id);
+      }));
+
+      $$(".image-cell[draggable='true']", els.adminEditor).forEach(cell=>{
+        cell.addEventListener("dragstart", (ev)=>{
+          ev.dataTransfer.setData("text/plain", cell.getAttribute("data-idx"));
+          cell.classList.add("dragging");
+        });
+        cell.addEventListener("dragend", ()=>cell.classList.remove("dragging"));
+        cell.addEventListener("dragover", (ev)=>ev.preventDefault());
+        cell.addEventListener("drop", async (ev)=>{
+          ev.preventDefault();
+          const from = Number(ev.dataTransfer.getData("text/plain"));
+          const to = Number(cell.getAttribute("data-idx"));
+          if(from===to) return;
+          const img = p.images.splice(from,1)[0];
+          p.images.splice(to,0,img);
+          await updateItemInFirestore(p.id, { ...p });
+          editItem(id);
+        });
+      });
+
+      $("#saveItem", els.adminEditor).addEventListener("click", async ()=>{
+        if ((p.images||[]).length < 2){
+          if(!confirm("You have fewer than 2 images. Continue?")) return;
+        }
+        p.title = eTitle.value.trim() || "Untitled";
+        p.price = ePrice.value.trim();
+        p.specs = eSpecs.value.trim();
+        p.category = eCategory.value;
+        await updateItemInFirestore(p.id, { ...p });
+        alert("Saved item.");
+      });
+
+      $("#deleteItem", els.adminEditor).addEventListener("click", async ()=>{
+        if (!confirm("Delete this item?")) return;
+        await deleteItemFromFirestore(p.id);
+        els.adminEditor.innerHTML = `<div class="empty-state"><p>Select an item to edit its images (2–5), title, price, specs, and category.</p><p class="tiny muted">Tip: Drag to reorder images. PNG/JPG only.</p></div>`;
+      });
+    }
+
+    function toDataURL(file){
+      return new Promise((resolve,reject)=>{
+        const reader = new FileReader();
+        reader.onload = ()=>resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    els.addProduct.addEventListener("click", async ()=>{
+      const item = {
+        title: "New Product",
+        price: "",
+        specs: "",
+        images: [],
+        category: "phones"
+      };
+      await addItemToFirestore(item);
+    });
+    els.addHostel.addEventListener("click", async ()=>{
+      const item = {
+        title: "New Hostel",
+        price: "",
+        specs: "",
+        images: [],
+        category: "hostels"
+      };
+      await addItemToFirestore(item);
+    });
+
+    els.saveAll.addEventListener("click", async ()=>{ alert("Firestore is the source of truth — changes auto-save. Use export if you need a backup."); });
+
+    els.exportData.addEventListener("click", exportJSON);
+    els.resetData.addEventListener("click", resetDataFirestore);
+
+    els.savePassword.addEventListener("click", async ()=>{
+      const v = els.adminPasswordSetting.value.trim();
+      if(!v){ alert("Enter a new password."); return; }
+      await setDoc(doc(db, META_COLL, META_DOC_ID), { adminPassword: v, numbers: state.numbers });
+      alert("Admin password updated.");
+      els.adminPasswordSetting.value = "";
+    });
+    els.saveNumbers.addEventListener("click", async ()=>{
+      const v = els.waNumbersSetting.value.trim();
+      if(!v){ alert("Enter numbers."); return; }
+      let arr = v.split(",").map(s=>s.replace(/\\D/g,"")).filter(Boolean);
+      if(!arr.length){ alert("No valid numbers."); return; }
+      state.numbers = arr;
+      await setDoc(doc(db, META_COLL, META_DOC_ID), { adminPassword: state.pw, numbers: state.numbers });
+      populateNumbers();
+      alert("WhatsApp numbers updated.");
+    });
+
+    // FILTERS
+    function clampRanges(){
+      let min = Number(els.minRange.value);
+      let max = Number(els.maxRange.value);
+      if (min > max){ [min, max] = [max, min]; }
+      els.minRange.value = String(min);
+      els.maxRange.value = String(max);
+      els.minPrice.value = String(min);
+      els.maxPrice.value = String(max);
+      state.filters.min = min;
+      state.filters.max = max;
+    }
+
+    ["input","change"].forEach(ev=>{
+      els.minRange.addEventListener(ev, ()=>{ clampRanges(); renderGrid(); });
+      els.maxRange.addEventListener(ev, ()=>{ clampRanges(); renderGrid(); });
+    });
+    ["input","change"].forEach(ev=>{
+      els.minPrice.addEventListener(ev, ()=>{
+        let v = Number(els.minPrice.value||MIN_PRICE);
+        v = Math.max(MIN_PRICE, Math.min(v, Number(els.maxPrice.value||MAX_PRICE)));
+        els.minRange.value = String(v);
+        clampRanges(); renderGrid();
+      });
+      els.maxPrice.addEventListener(ev, ()=>{
+        let v = Number(els.maxPrice.value||MAX_PRICE);
+        v = Math.min(MAX_PRICE, Math.max(v, Number(els.minPrice.value||MIN_PRICE)));
+        els.maxRange.value = String(v);
+        clampRanges(); renderGrid();
+      });
+    });
+
+    els.searchInput.addEventListener("input", ()=>{ state.filters.q = els.searchInput.value.trim().toLowerCase(); renderGrid(); });
+    els.categoryFilter.addEventListener("change", ()=>{ state.filters.cat = els.categoryFilter.value; renderGrid(); });
+
+    // THEME
+    function applyInitialTheme(){
+      const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      if (!localStorage.getItem("sneakylinksTheme")){
+        state.theme = prefersLight ? "light" : "dark";
+        localStorage.setItem("sneakylinksTheme", JSON.stringify(state.theme));
+      }
+      if(state.theme === "light"){ document.documentElement.classList.add("light"); }
+    }
+    document.getElementById("darkToggle").addEventListener("click", ()=>{
+      state.theme = state.theme === "light" ? "dark" : "light";
+      localStorage.setItem("sneakylinksTheme", JSON.stringify(state.theme));
+      if(state.theme === "light"){ document.documentElement.classList.add("light"); }
+      else { document.documentElement.classList.remove("light"); }
+    });
+
+    // INIT
+    async function init(){
+      document.getElementById("year").textContent = new Date().getFullYear();
+      applyInitialTheme();
+      await ensureMetaDoc();
+
+      // If no items exist yet, create placeholders once
+      const snapshot = await getDocs(collection(db, ITEMS_COLL));
+      if (snapshot.empty){
+        // create placeholders
+        const placeholders = [];
+        for (let i=0;i<PRODUCT_PLACEHOLDERS;i++){
+          placeholders.push({
+            title: `Product ${i+1}`,
+            price: "",
+            specs: "Add specs in admin",
+            images: [],
+            category: ["phones","laptops","others"][i%3]
+          });
+        }
+        for (let i=0;i<HOSTEL_PLACEHOLDERS;i++){
+          placeholders.push({
+            title: `Hostel ${i+1}`,
+            price: "",
+            specs: "Add hostel details in admin",
+            images: [],
+            category: "hostels"
+          });
+        }
+        const adds = placeholders.map(p => addDoc(collection(db, ITEMS_COLL), p));
+        await Promise.all(adds);
+      }
+
+      // Start realtime listeners (will trigger initial render)
+      startRealtimeListeners();
+    }
+
+    init();
+  </script>
+</body>
+</html>
